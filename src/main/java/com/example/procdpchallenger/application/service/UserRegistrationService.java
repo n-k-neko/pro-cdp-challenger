@@ -1,7 +1,7 @@
 package com.example.procdpchallenger.application.service;
 
 import com.example.procdpchallenger.application.dto.UserRegistrationCommand;
-import com.example.procdpchallenger.application.policy.UserRegistrationPolicy;
+import com.example.procdpchallenger.application.policy.ApplicationUserRegistrationPolicy;
 import com.example.procdpchallenger.application.port.inbound.UserRegistrationUseCase;
 import com.example.procdpchallenger.application.port.outbound.user.UserRegistrationRepository;
 import com.example.procdpchallenger.domain.user.entity.UserForRegistration;
@@ -17,7 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class UserRegistrationService implements UserRegistrationUseCase {
     private final UserRegistrationRepository userRegistrationRepository;
     private final UserValidationPolicy userValidationPolicy; // ドメイン層
-    private final UserRegistrationPolicy userRegistrationPolicy; // アプリケーション層
+    private final ApplicationUserRegistrationPolicy userRegistrationPolicy; // アプリケーション層
     // TODO:PasswordEncoder本当にここか？
     private final PasswordEncoder passwordEncoder;
 

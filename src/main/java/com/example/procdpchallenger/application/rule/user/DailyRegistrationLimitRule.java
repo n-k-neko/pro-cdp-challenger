@@ -11,7 +11,7 @@ import java.time.LocalDate;
 
 @Component
 @AllArgsConstructor
-public class DailyRegistrationLimitRule implements UserRegistrationRule {
+public class DailyRegistrationLimitRule implements ApplicationUserRegistrationRule {
     private final UserRegistrationRepository userRegistrationRepository;
     public final int MAX_REGISTRATIONS_ON_WEEKDAY = 5;
     public final int MAX_REGISTRATIONS_ON_WEEKEND = 10;

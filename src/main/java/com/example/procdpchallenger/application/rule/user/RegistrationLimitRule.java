@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @AllArgsConstructor
-public class RegistrationLimitRule implements UserRegistrationRule {
+public class RegistrationLimitRule implements ApplicationUserRegistrationRule {
     private final UserRegistrationRepository userRegistrationRepository;
     public static final int REGISTRATION_LIMIT = 10000;
 

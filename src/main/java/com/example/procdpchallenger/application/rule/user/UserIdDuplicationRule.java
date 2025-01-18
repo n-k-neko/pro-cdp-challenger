@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @AllArgsConstructor
-public class UserIdDuplicationRule implements UserRegistrationRule {
+public class UserIdDuplicationRule implements ApplicationUserRegistrationRule {
     private final UserRepository userRepository;
 
     @Override
