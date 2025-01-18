@@ -38,6 +38,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             @NonNull HttpServletResponse response,
             @NonNull FilterChain filterChain)
             throws ServletException, IOException {
+
+        // すでに認証済みの場合、フィルタをスキップ
+        if (SecurityContextHolder.getContext().getAuthentication() != null) {
+            filterChain.doFilter(request, response);
+            return;
+        }
         // Authorizationヘッダーからトークンを取得
         String token = resolveToken(request);
 
@@ -51,6 +57,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     null, // credentials
                     Collections.emptyList() // 権限なし
             );
+            // SecurityContextHolder に Authentication オブジェクトを設定することで、Spring Security の他の認証処理やフィルタがスキップ
+            // つまり認証・認可が完了した状態になる
             SecurityContextHolder.getContext().setAuthentication(authentication);
         }
 

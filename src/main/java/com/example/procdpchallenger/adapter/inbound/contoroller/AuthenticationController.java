@@ -22,10 +22,10 @@ public class AuthenticationController {
         // ユーザー名とパスワードで認証を試行
         /*
             authenticationManager.authenticateの裏側では、登録されたAuthenticationProviderが順番に呼び出される。
-            JwtAuthenticationProviderのsupportsメソッドで、処理対象とするAuthenticationクラスとして、
+            LoginAuthenticationProviderrのsupportsメソッドで、処理対象とするAuthenticationクラスとして、
             UsernamePasswordAuthenticationTokenを処理対象としているため、
             authenticationManager.authenticateにUsernamePasswordAuthenticationTokenを渡すと、
-            JwtAuthenticationProviderが呼び出される。
+            LoginAuthenticationProviderが呼び出される。
          */
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginRequestDto.userId(), loginRequestDto.password())
