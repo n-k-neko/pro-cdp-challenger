@@ -10,8 +10,10 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
+import org.springframework.lang.NonNull;
 
 import java.io.IOException;
+import java.util.Collections;
 
 @Component
 @AllArgsConstructor
@@ -31,7 +33,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
      * @throws IOException      入出力処理中にエラーが発生した場合
      */
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+    protected void doFilterInternal(
+            @NonNull HttpServletRequest request,
+            @NonNull HttpServletResponse response,
+            @NonNull FilterChain filterChain)
             throws ServletException, IOException {
         // Authorizationヘッダーからトークンを取得
         String token = resolveToken(request);
@@ -42,7 +47,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
             // 認証情報を作成し、SecurityContextに設定
             Authentication authentication = new UsernamePasswordAuthenticationToken(
-                    userId, null, null // 必要に応じて権限情報を設定
+                    userId, 
+                    null, // credentials
+                    Collections.emptyList() // 権限なし
             );
             SecurityContextHolder.getContext().setAuthentication(authentication);
         }
