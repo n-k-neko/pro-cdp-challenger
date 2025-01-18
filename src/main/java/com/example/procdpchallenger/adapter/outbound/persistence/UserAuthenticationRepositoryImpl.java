@@ -4,6 +4,7 @@ import com.example.procdpchallenger.application.port.outbound.auth.UserAuthentic
 import com.example.procdpchallenger.domain.authentication.entity.UserAuthentication;
 import com.example.procdpchallenger.domain.user.valueobject.UserId;
 import lombok.AllArgsConstructor;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 

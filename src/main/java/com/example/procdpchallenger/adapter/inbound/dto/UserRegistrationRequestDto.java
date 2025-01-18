@@ -9,7 +9,6 @@ import jakarta.validation.constraints.Size;
 
 public record UserRegistrationRequestDto(
         @NotBlank(message = "User ID must not be blank")
-        // TODO:カスタムアノテーションでUserId値オブジェクトの最大、最小文字数をチェックするように修正するか検討
         @Size(min = 4, max = 15, message = "User ID must be between 4 and 15 characters")
         String userId,
 
@@ -19,12 +18,12 @@ public record UserRegistrationRequestDto(
 
         @NotBlank(message = "Email must not be blank")
         @Email(message = "Email must be a valid email address")
-        String email
+        String emailAddress
 ) {
         public UserRegistrationCommand toCommand() {
                 return new UserRegistrationCommand(
                         new UserId(userId),
                         new PlainPassword(password),
-                        new com.example.procdpchallenger.domain.user.valueobject.Email(email));
+                        new com.example.procdpchallenger.domain.user.valueobject.EmailAddress(emailAddress));
         }
 }

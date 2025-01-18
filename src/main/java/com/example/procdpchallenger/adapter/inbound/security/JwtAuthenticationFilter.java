@@ -38,11 +38,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         if (token != null && tokenProvider.validateToken(token)) {
             // トークンからユーザー情報を取得
-            String username = tokenProvider.extractUserId(token);
+            String userId = tokenProvider.extractUserId(token);
 
             // 認証情報を作成し、SecurityContextに設定
             Authentication authentication = new UsernamePasswordAuthenticationToken(
-                    username, null, null // 必要に応じて権限情報を設定
+                    userId, null, null // 必要に応じて権限情報を設定
             );
             SecurityContextHolder.getContext().setAuthentication(authentication);
         }

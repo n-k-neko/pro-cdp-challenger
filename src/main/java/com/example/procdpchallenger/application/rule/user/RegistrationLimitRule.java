@@ -5,7 +5,7 @@ import com.example.procdpchallenger.application.port.outbound.user.UserRegistrat
 import com.example.procdpchallenger.domain.user.entity.UserForRegistration;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
-
+import com.example.procdpchallenger.shared.exception.ErrorCodes;
 @Component
 @AllArgsConstructor
 public class RegistrationLimitRule implements ApplicationUserRegistrationRule {
@@ -16,7 +16,7 @@ public class RegistrationLimitRule implements ApplicationUserRegistrationRule {
     public void validate(UserForRegistration userForRegistration) {
         if (userRegistrationRepository.countRegistrations() >= REGISTRATION_LIMIT) {
             throw new BusinessRuleViolationException(
-                "Registration limit exceeded",
+                ErrorCodes.REGISTRATION_LIMIT_EXCEEDED,
                 "registration_limit_exceeded");
         }
     }

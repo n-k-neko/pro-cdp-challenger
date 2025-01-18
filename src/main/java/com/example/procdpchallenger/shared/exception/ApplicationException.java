@@ -6,8 +6,8 @@ package com.example.procdpchallenger.shared.exception;
 public abstract class ApplicationException extends RuntimeException {
     private final String errorCode;
 
-    protected ApplicationException(String message, String errorCode) {
-        super(message);
+    protected ApplicationException(String errorCode, String errorMessage) {
+        super(errorMessage);
         this.errorCode = errorCode;
     }
 

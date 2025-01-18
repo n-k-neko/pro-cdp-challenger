@@ -3,6 +3,8 @@ package com.example.procdpchallenger.application.rule.user;
 import com.example.procdpchallenger.application.exception.BusinessRuleViolationException;
 import com.example.procdpchallenger.application.port.outbound.user.UserRegistrationRepository;
 import com.example.procdpchallenger.domain.user.entity.UserForRegistration;
+import com.example.procdpchallenger.shared.exception.ErrorCodes;
+
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -26,8 +28,8 @@ public class DailyRegistrationLimitRule implements ApplicationUserRegistrationRu
         final long registrationsToday = userRegistrationRepository.countRegistrationsByDate(today);
         if(registrationsToday >= maxRegistrations){
             throw new BusinessRuleViolationException(
-                    String.format("Daily registration limit exceeded (%d users allowed today). Try again tomorrow.", maxRegistrations),
-                    "daily_registration_limit_exceeded"
+                    ErrorCodes.DAILY_REGISTRATION_LIMIT_EXCEEDED,
+                    String.format("Sorry, Daily registration limit exceeded (%d users allowed today). Try again tomorrow.", maxRegistrations)
             );
         }
     }

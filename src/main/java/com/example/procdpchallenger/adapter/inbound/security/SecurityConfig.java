@@ -24,10 +24,15 @@ public class SecurityConfig {
             .authorizeHttpRequests(authorize -> authorize
                     .requestMatchers(ApiEndpoints.API_AUTH + "/**").permitAll()
                     .requestMatchers(HttpMethod.POST, ApiEndpoints.API_USER).permitAll() // ユーザー登録APIは認証不要
+                    // TODO：本番環境の場合はH2コンソールへのアクセスを許可しないようにする
+                    .requestMatchers("/h2-console/**").permitAll() // H2コンソールへのアクセスを許可
                     .anyRequest().authenticated()
             )
+            .headers(headers -> headers.frameOptions(frameOptionsConfig -> 
+                frameOptionsConfig.sameOrigin()
+            ))
             .authenticationProvider(authenticationProvider)
-            .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);// JWTフィルタ
+            .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class); // JWTフィルタ
         return http.build();
     }
 }

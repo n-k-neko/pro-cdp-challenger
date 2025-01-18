@@ -2,6 +2,8 @@ package com.example.procdpchallenger.domain.user.valueobject;
 
 import java.util.List;
 
+import com.example.procdpchallenger.domain.exception.DomainRuleViolationException;
+import com.example.procdpchallenger.shared.exception.ErrorCodes;
 public record UserId(String value) {
     public static final int MAX_LENGTH = 15;
     
@@ -10,13 +12,13 @@ public record UserId(String value) {
 
     public UserId {
         if (value == null || value.isEmpty()) {
-            throw new IllegalArgumentException("UserId must not be null or empty");
+            throw new DomainRuleViolationException(ErrorCodes.INVALID_USER_ID, "UserId must not be null or empty");
         }
         if (value.length() > MAX_LENGTH) {
-            throw new IllegalArgumentException("UserId must not exceed " + MAX_LENGTH + " characters");
+            throw new DomainRuleViolationException(ErrorCodes.INVALID_USER_ID, "UserId must not exceed " + MAX_LENGTH + " characters");
         }
         if (isProhibitedWord(value)) {
-            throw new IllegalArgumentException("UserId must not be one of the prohibited words: " + PROHIBITED_WORDS);
+            throw new DomainRuleViolationException(ErrorCodes.INVALID_USER_ID, "UserId must not be one of the prohibited words: " + PROHIBITED_WORDS);
         }
     }
 

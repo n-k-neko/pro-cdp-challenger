@@ -1,6 +1,6 @@
 package com.example.procdpchallenger.application.port.outbound.user;
 
-import com.example.procdpchallenger.domain.user.valueobject.Email;
+import com.example.procdpchallenger.domain.user.valueobject.EmailAddress;
 import com.example.procdpchallenger.domain.user.valueobject.UserId;
 
 /**
@@ -9,5 +9,5 @@ import com.example.procdpchallenger.domain.user.valueobject.UserId;
  */
 public interface UserRepository {
     boolean existsByUserId(UserId userId);
-    boolean existsByEmail(Email email);
+    boolean existsByEmailAddress(EmailAddress emailAddress);
 }

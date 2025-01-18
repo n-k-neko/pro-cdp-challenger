@@ -6,6 +6,11 @@ import com.example.procdpchallenger.domain.user.valueobject.UserId;
 import org.springframework.stereotype.Component;
 
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.MalformedJwtException;
+import io.jsonwebtoken.UnsupportedJwtException;
+import io.jsonwebtoken.security.Keys;
 
 import java.util.Date;
 
@@ -50,7 +55,7 @@ public class JwtTokenProvider implements TokenProvider {
                 .setIssuer(JwtToken.ISSUER)
                 .setIssuedAt(now)
                 .setExpiration(validity)
-                .signWith(SignatureAlgorithm.HS256, secretKey) // 署名アルゴリズムと秘密鍵を設定
+                .signWith(Keys.hmacShaKeyFor(secretKey.getBytes()))
                 .compact();
     }
 
@@ -64,9 +69,9 @@ public class JwtTokenProvider implements TokenProvider {
     public boolean validateToken(String token) {
         try {
             Jwts.parserBuilder()
-                    .setSigningKey(secretKey) // トークンを検証するための秘密鍵を設定
+                    .setSigningKey(Keys.hmacShaKeyFor(secretKey.getBytes()))
                     .build()
-                    .parseClaimsJws(token); // トークンを解析
+                    .parseClaimsJws(token);
             return true; // トークンが有効である場合
         } catch (ExpiredJwtException e) {
             System.err.println("Token has expired: " + e.getMessage());
@@ -88,11 +93,12 @@ public class JwtTokenProvider implements TokenProvider {
      */
     @Override
     public String extractUserId(String token) {
-        Claims claims = Jwts.parser()
-                .setSigningKey(secretKey) // 秘密鍵を設定
-                .parseClaimsJws(token) // トークンを解析
-                .getBody(); // クレーム情報を取得
+        Claims claims = Jwts.parserBuilder()
+                .setSigningKey(Keys.hmacShaKeyFor(secretKey.getBytes()))
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
 
-        return claims.getSubject(); // ユーザーIDを返す（setSubjectで設定した値）
+        return claims.getSubject(); 
     }
 }

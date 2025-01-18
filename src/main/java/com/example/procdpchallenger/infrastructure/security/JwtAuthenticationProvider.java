@@ -28,7 +28,7 @@ public class JwtAuthenticationProvider implements AuthenticationProvider {
 
         // ユーザー認証処理
         UserAuthentication userAuth = userAuthenticationRepository.findByUserId(userId)
-                .orElseThrow(() -> new UserNotFoundException("User not found with ID: " + userId.value()));
+                .orElseThrow(() -> new RuntimeException("Invalid credentials"));
 
         if (!passwordEncoder.matches(password, userAuth.hashedPassword().value())) {
             throw new RuntimeException("Invalid credentials");
