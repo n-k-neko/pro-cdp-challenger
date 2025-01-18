@@ -4,6 +4,8 @@ import com.example.procdpchallenger.adapter.inbound.security.TokenProvider;
 import com.example.procdpchallenger.application.port.outbound.auth.UserAuthenticationRepository;
 import com.example.procdpchallenger.domain.authentication.entity.UserAuthentication;
 import com.example.procdpchallenger.domain.user.valueobject.UserId;
+import com.example.procdpchallenger.infrastructure.exception.InvalidCredentialsException;
+
 import lombok.AllArgsConstructor;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -30,10 +32,10 @@ public class LoginAuthenticationProvider implements AuthenticationProvider {
 
         // ユーザー認証処理
         UserAuthentication userAuth = userAuthenticationRepository.findByUserId(userId)
-                .orElseThrow(() -> new RuntimeException("Invalid credentials"));
+                .orElseThrow(() -> new InvalidCredentialsException("Invalid credentials"));
 
         if (!passwordEncoder.matches(password, userAuth.hashedPassword().value())) {
-            throw new RuntimeException("Invalid credentials");
+            throw new InvalidCredentialsException("Invalid credentials");
         }
 
         final String token = tokenProvider.generateToken(userId);

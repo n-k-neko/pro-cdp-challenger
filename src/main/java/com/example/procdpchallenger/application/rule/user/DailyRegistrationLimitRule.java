@@ -25,7 +25,7 @@ public class DailyRegistrationLimitRule implements ApplicationUserRegistrationRu
 
         final int maxRegistrations = isWeekend(dayOfWeek) ? MAX_REGISTRATIONS_ON_WEEKEND : MAX_REGISTRATIONS_ON_WEEKDAY;
 
-        final long registrationsToday = userRegistrationRepository.countRegistrationsByDate(today);
+        final int registrationsToday = userRegistrationRepository.countRegistrationsByDate(today);
         if(registrationsToday >= maxRegistrations){
             throw new BusinessRuleViolationException(
                     ErrorCodes.DAILY_REGISTRATION_LIMIT_EXCEEDED,

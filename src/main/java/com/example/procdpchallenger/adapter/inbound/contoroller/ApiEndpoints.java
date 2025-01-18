@@ -6,7 +6,6 @@ public class ApiEndpoints {
     // Authentication
     public static final String API_AUTH = API + "/auth";
     public static final String API_AUTH_LOGIN = API_AUTH + "/login";
-    public static final String API_AUTH_REGISTER = API_AUTH + "/register";
 
     // Exam
 

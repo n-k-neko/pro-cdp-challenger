@@ -7,6 +7,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
+import java.util.Optional;
 
 @Repository
 @AllArgsConstructor
@@ -15,7 +16,15 @@ public class UserRegistrationRepositoryImpl implements UserRegistrationRepositor
 
     @Override
     public void save(UserForRegistration userForRegistration) {
-        // TODO：ここで実装する
+        final String sql = """
+                INSERT INTO users (user_id, email_address, hashed_password, created_at, updated_at)
+                VALUES (?, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+                """;
+        jdbcTemplate.update(sql, 
+            userForRegistration.userId().value(), 
+            userForRegistration.emailAddress().value(), 
+            userForRegistration.hashedPassword().value()
+            );
     }
 
     /*
@@ -23,15 +32,24 @@ public class UserRegistrationRepositoryImpl implements UserRegistrationRepositor
      * ※：運用・管理は別のアプリケーションで実装するため
      */
     @Override
-    public long countRegistrationsByDate(LocalDate date) {
-        // TODO：ここで実装する
-        return 0;
+    public int countRegistrationsByDate(LocalDate date) {
+        final String sql = """
+                SELECT COUNT(*)
+                FROM users
+                WHERE DATE(created_at) = ?
+                """;
+        return Optional.ofNullable(jdbcTemplate.queryForObject(sql, Integer.class, date))
+            .orElse(0);
     }
 
     @Override
     public int countRegistrations() {
-        // TODO：ここで実装する
-        return 0;
+        final String sql = """
+                SELECT COUNT(*)
+                FROM users
+                """;
+        return Optional.ofNullable(jdbcTemplate.queryForObject(sql, Integer.class))
+            .orElse(0);
     }
 
 }
