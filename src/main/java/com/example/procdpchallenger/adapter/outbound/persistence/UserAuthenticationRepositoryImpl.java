@@ -25,7 +25,7 @@ public class UserAuthenticationRepositoryImpl implements UserAuthenticationRepos
                 """;
         try {
             return Optional.ofNullable(jdbcTemplate.queryForObject(sql, 
-                (rs, _) -> new UserAuthentication(
+                (rs, rowNum) -> new UserAuthentication(
                     new UserId(rs.getString("user_id")),
                     new HashedPassword(rs.getString("hashed_password"))
                 ),

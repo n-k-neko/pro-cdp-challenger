@@ -36,9 +36,10 @@ public class UserRegistrationRepositoryImpl implements UserRegistrationRepositor
         final String sql = """
                 SELECT COUNT(*)
                 FROM users
-                WHERE DATE(created_at) = ?
+                WHERE created_at >= ? AND created_at < ?
                 """;
-        return Optional.ofNullable(jdbcTemplate.queryForObject(sql, Integer.class, date))
+        LocalDate nextDay = date.plusDays(1);
+        return Optional.ofNullable(jdbcTemplate.queryForObject(sql, Integer.class, date, nextDay))
             .orElse(0);
     }
 
@@ -51,5 +52,4 @@ public class UserRegistrationRepositoryImpl implements UserRegistrationRepositor
         return Optional.ofNullable(jdbcTemplate.queryForObject(sql, Integer.class))
             .orElse(0);
     }
-
 }

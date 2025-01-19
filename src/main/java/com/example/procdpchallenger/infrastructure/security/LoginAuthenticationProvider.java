@@ -1,6 +1,5 @@
 package com.example.procdpchallenger.infrastructure.security;
 
-import com.example.procdpchallenger.adapter.inbound.security.TokenProvider;
 import com.example.procdpchallenger.application.port.outbound.auth.UserAuthenticationRepository;
 import com.example.procdpchallenger.domain.authentication.entity.UserAuthentication;
 import com.example.procdpchallenger.domain.user.valueobject.UserId;
@@ -11,6 +10,7 @@ import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 /**
@@ -22,7 +22,6 @@ import org.springframework.stereotype.Component;
 @AllArgsConstructor
 public class LoginAuthenticationProvider implements AuthenticationProvider {
     private final PasswordEncoder passwordEncoder;
-    private final TokenProvider tokenProvider;
     private final UserAuthenticationRepository userAuthenticationRepository;
 
     @Override
@@ -37,10 +36,7 @@ public class LoginAuthenticationProvider implements AuthenticationProvider {
         if (!passwordEncoder.matches(password, userAuth.hashedPassword().value())) {
             throw new InvalidCredentialsException("Invalid credentials");
         }
-
-        final String token = tokenProvider.generateToken(userId);
-
-        return new UsernamePasswordAuthenticationToken(userId.value(), token);
+        return new UsernamePasswordAuthenticationToken(userId.value(), null, AuthorityUtils.NO_AUTHORITIES);
     }
 
     @Override

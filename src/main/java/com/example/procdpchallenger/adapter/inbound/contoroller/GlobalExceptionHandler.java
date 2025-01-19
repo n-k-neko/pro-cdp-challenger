@@ -1,21 +1,23 @@
 package com.example.procdpchallenger.adapter.inbound.contoroller;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.bind.annotation.ResponseStatus;
-import lombok.extern.slf4j.Slf4j;
 
 import com.example.procdpchallenger.adapter.inbound.dto.ErrorResponse;
 import com.example.procdpchallenger.application.exception.BusinessRuleViolationException;
 import com.example.procdpchallenger.domain.exception.DomainRuleViolationException;
 import com.example.procdpchallenger.domain.exception.InfrastructureException;
-import com.example.procdpchallenger.infrastructure.security.exception.InvalidCredentialsException;
+import com.example.procdpchallenger.infrastructure.exception.InvalidCredentialsException;
 
-@Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+    private static final Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
+
     @ExceptionHandler(DomainRuleViolationException.class)
     public ResponseEntity<ErrorResponse> handleDomainException(DomainRuleViolationException ex) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
@@ -30,8 +32,8 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(InfrastructureException.class)
     public ResponseEntity<ErrorResponse> handleInfrastructureException(InfrastructureException ex) {
-      // エンドユーザーには一般化されたエラーメッセージを表示
-        log.error("Infrastructure error occurred: {}", ex.getMessage(), ex);
+        // エンドユーザーには一般化されたエラーメッセージを表示
+        logger.error("Infrastructure error occurred: {}", ex.getMessage(), ex);
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                              .body(new ErrorResponse(ex.getErrorCode(), "An unexpected error occurred."));
     }
