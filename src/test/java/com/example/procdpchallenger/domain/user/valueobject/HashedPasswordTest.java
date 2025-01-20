@@ -1,7 +1,7 @@
 package com.example.procdpchallenger.domain.user.valueobject;
 
 import org.junit.jupiter.api.Test;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.argon2.Argon2PasswordEncoder;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -9,7 +9,7 @@ class HashedPasswordTest {
     @Test
     void generateHashedPasswordSuccessfully() {
         PlainPassword plainPassword = new PlainPassword("securePass123");
-        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        Argon2PasswordEncoder passwordEncoder = Argon2PasswordEncoder.defaultsForSpringSecurity_v5_8();
 
         HashedPassword hashedPassword = HashedPassword.from(plainPassword, passwordEncoder);
 
@@ -18,7 +18,8 @@ class HashedPasswordTest {
 
     @Test
     void throwExceptionWhenPlainPasswordIsNull() {
-        assertThrows(IllegalArgumentException.class, () -> HashedPassword.from(null, new BCryptPasswordEncoder()));
+        assertThrows(IllegalArgumentException.class, 
+            () -> HashedPassword.from(null, Argon2PasswordEncoder.defaultsForSpringSecurity_v5_8()));
     }
 
     @Test
@@ -27,5 +28,4 @@ class HashedPasswordTest {
 
         assertThrows(IllegalArgumentException.class, () -> HashedPassword.from(plainPassword, null));
     }
-
 }
