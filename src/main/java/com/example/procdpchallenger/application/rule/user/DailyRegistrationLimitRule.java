@@ -10,17 +10,20 @@ import org.springframework.stereotype.Component;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.Clock;
 
 @Component
 @AllArgsConstructor
 public class DailyRegistrationLimitRule implements ApplicationUserRegistrationRule {
     private final UserRegistrationRepository userRegistrationRepository;
+    private final Clock clock;
+
     public final int MAX_REGISTRATIONS_ON_WEEKDAY = 5;
     public final int MAX_REGISTRATIONS_ON_WEEKEND = 10;
 
     @Override
     public void validate(UserForRegistration userForRegistration){
-        final LocalDate today = LocalDate.now();
+        final LocalDate today = LocalDate.now(clock);
         final DayOfWeek dayOfWeek = today.getDayOfWeek();
 
         final int maxRegistrations = isWeekend(dayOfWeek) ? MAX_REGISTRATIONS_ON_WEEKEND : MAX_REGISTRATIONS_ON_WEEKDAY;
