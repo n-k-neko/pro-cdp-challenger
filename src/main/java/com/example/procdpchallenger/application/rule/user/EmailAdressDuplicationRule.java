@@ -9,7 +9,7 @@ import com.example.procdpchallenger.shared.exception.ErrorCodes;
 
 @Component
 @AllArgsConstructor
-public class EmailDuplicationRule implements ApplicationUserRegistrationRule {
+public class EmailAdressDuplicationRule implements ApplicationUserRegistrationRule {
     private final UserRepository userRepository;
 
     @Override
