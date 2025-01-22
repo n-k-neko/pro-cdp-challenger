@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import com.example.procdpchallenger.adapter.inbound.dto.ErrorResponse;
 import com.example.procdpchallenger.application.exception.BusinessRuleViolationException;
 import com.example.procdpchallenger.domain.exception.DomainRuleViolationException;
-import com.example.procdpchallenger.domain.exception.InfrastructureException;
+import com.example.procdpchallenger.infrastructure.exception.InfrastructureException;
 import com.example.procdpchallenger.infrastructure.exception.InvalidCredentialsException;
 
 @RestControllerAdvice
