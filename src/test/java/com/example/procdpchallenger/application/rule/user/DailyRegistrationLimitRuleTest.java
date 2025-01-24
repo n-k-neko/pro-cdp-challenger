@@ -38,7 +38,7 @@ public class DailyRegistrationLimitRuleTest {
         dailyRegistrationLimitRule = new DailyRegistrationLimitRule(userRegistrationRepository, fixedClock);
 
         LocalDate weekday = LocalDate.of(2023, 10, 2);
-        when(userRegistrationRepository.countRegistrationsByDate(weekday)).thenReturn(4);
+        when(userRegistrationRepository.countRegistrationsByDate(weekday)).thenReturn(DailyRegistrationLimitRule.MAX_REGISTRATIONS_ON_WEEKDAY - 1);
 
         UserForRegistration user = new UserForRegistration(
             new UserId("testUser"),
@@ -56,7 +56,7 @@ public class DailyRegistrationLimitRuleTest {
         dailyRegistrationLimitRule = new DailyRegistrationLimitRule(userRegistrationRepository, fixedClock);
 
         LocalDate weekday = LocalDate.of(2023, 10, 2);
-        when(userRegistrationRepository.countRegistrationsByDate(weekday)).thenReturn(6);
+        when(userRegistrationRepository.countRegistrationsByDate(weekday)).thenReturn(DailyRegistrationLimitRule.MAX_REGISTRATIONS_ON_WEEKDAY + 1);
 
         UserForRegistration user = new UserForRegistration(
             new UserId("testUser"),
@@ -74,7 +74,7 @@ public class DailyRegistrationLimitRuleTest {
         dailyRegistrationLimitRule = new DailyRegistrationLimitRule(userRegistrationRepository, fixedClock);
 
         LocalDate weekend = LocalDate.of(2023, 10, 1);
-        when(userRegistrationRepository.countRegistrationsByDate(weekend)).thenReturn(2);
+        when(userRegistrationRepository.countRegistrationsByDate(weekend)).thenReturn(DailyRegistrationLimitRule.MAX_REGISTRATIONS_ON_WEEKEND - 1);
 
         UserForRegistration user = new UserForRegistration(
             new UserId("testUser"),
@@ -92,7 +92,7 @@ public class DailyRegistrationLimitRuleTest {
         dailyRegistrationLimitRule = new DailyRegistrationLimitRule(userRegistrationRepository, fixedClock);
 
         LocalDate weekend = LocalDate.of(2023, 10, 1);
-        when(userRegistrationRepository.countRegistrationsByDate(weekend)).thenReturn(4);
+        when(userRegistrationRepository.countRegistrationsByDate(weekend)).thenReturn(DailyRegistrationLimitRule.MAX_REGISTRATIONS_ON_WEEKEND + 1);
 
         UserForRegistration user = new UserForRegistration(
             new UserId("testUser"),

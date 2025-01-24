@@ -29,7 +29,7 @@ public class RegistrationLimitRuleTest {
     @Test
     public void testValidateWithinLimit() {
         // 登録数が制限内
-        when(userRegistrationRepository.countRegistrations()).thenReturn(9999);
+        when(userRegistrationRepository.countRegistrations()).thenReturn(RegistrationLimitRule.REGISTRATION_LIMIT - 1);
 
         UserForRegistration user = new UserForRegistration(
                 new UserId("testUser"),
@@ -44,7 +44,7 @@ public class RegistrationLimitRuleTest {
     @Test
     public void testValidateExceedsLimit() {
         // 登録数が制限を超える
-        when(userRegistrationRepository.countRegistrations()).thenReturn(10000);
+        when(userRegistrationRepository.countRegistrations()).thenReturn(RegistrationLimitRule.REGISTRATION_LIMIT);
 
         UserForRegistration user = new UserForRegistration(
                 new UserId("testUser"),

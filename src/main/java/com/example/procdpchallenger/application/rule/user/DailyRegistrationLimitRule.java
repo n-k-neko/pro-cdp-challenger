@@ -18,8 +18,8 @@ public class DailyRegistrationLimitRule implements ApplicationUserRegistrationRu
     private final UserRegistrationRepository userRegistrationRepository;
     private final Clock clock;
 
-    public final int MAX_REGISTRATIONS_ON_WEEKDAY = 5;
-    public final int MAX_REGISTRATIONS_ON_WEEKEND = 10;
+    public static final int MAX_REGISTRATIONS_ON_WEEKDAY = 5;
+    public static final int MAX_REGISTRATIONS_ON_WEEKEND = 10;
 
     @Override
     public void validate(UserForRegistration userForRegistration){

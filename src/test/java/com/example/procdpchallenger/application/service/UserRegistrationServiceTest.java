@@ -1,8 +1,10 @@
 package com.example.procdpchallenger.application.service;
 
 import com.example.procdpchallenger.application.dto.UserRegistrationCommand;
+import com.example.procdpchallenger.application.exception.BusinessRuleViolationException;
 import com.example.procdpchallenger.application.policy.ApplicationUserRegistrationPolicy;
 import com.example.procdpchallenger.application.port.outbound.user.UserRegistrationRepository;
+import com.example.procdpchallenger.domain.exception.DomainRuleViolationException;
 import com.example.procdpchallenger.domain.user.entity.UserForRegistration;
 import com.example.procdpchallenger.domain.user.policy.DomainUserRegistrationPolicy;
 import com.example.procdpchallenger.domain.user.valueobject.EmailAddress;
@@ -73,7 +75,7 @@ class UserRegistrationServiceTest {
             new PlainPassword("password123"),
             new EmailAddress("test@example.com")
         );
-        doThrow(new IllegalArgumentException("ドメインポリシー違反"))
+        doThrow(new DomainRuleViolationException("UNIT_TEST", "ドメインポリシー違反"))
             .when(domainUserRegistrationPolicy).validate(any(UserForRegistration.class));
 
         // When/Then
@@ -92,12 +94,12 @@ class UserRegistrationServiceTest {
             new PlainPassword("password123"),
             new EmailAddress("test@example.com")
         );
-        doThrow(new IllegalArgumentException("アプリケーションポリシー違反"))
+        doThrow(new BusinessRuleViolationException("UNIT_TEST", "アプリケーションポリシー違反"))
             .when(applicationUserRegistrationPolicy).validate(any(UserForRegistration.class));
 
         // When/Then
         org.junit.jupiter.api.Assertions.assertThrows(
-            IllegalArgumentException.class,
+            DomainRuleViolationException.class,
             () -> userRegistrationService.execute(command)
         );
         verify(userRegistrationRepository, never()).save(any());
