@@ -31,7 +31,9 @@
 [GitHub Projects](https://github.com/users/n-k-neko/projects/1)で管理する。
 
 ### ブランチ戦略
-スプリント2以降で、**GitHub Flow**を採用。
+スプリント2以降で、**GitHub Flow**を採用。  
+ブランチ名は、**<区分>/<issue番号>-<簡単な説明>** とする。  
+例：`feature/12-login`
 
 ### 開発方針
 **バックエンド：WebAPIアプリケーション**   
