@@ -13,4 +13,8 @@ public class ApiEndpoints {
 
     // User
     public static final String API_USER = API + "/users";
+
+    // Information
+    public static final String API_INFORMATION = API + "/information";
+    
 }
