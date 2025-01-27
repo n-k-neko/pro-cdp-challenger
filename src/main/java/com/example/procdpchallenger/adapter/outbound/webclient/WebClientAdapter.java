@@ -17,10 +17,14 @@ public class WebClientAdapter implements ApiClientPort {
     private final List<ResponseMapper<?, ?>> mappers;
 
     @Override
-    public <T, R> R fetchData(String endpoint, Class<R> domainType) {
+    /*
+     * 同期呼び出し
+     * WebClientでblock()を行い<T>を返すことで、
+     * アプリケーション層にアダプター層の詳細を隠蔽し層間の責任分担を明確にする。
+     */
+    public <T, R> R fetchDataSync(String endpoint, Class<R> domainType) {
         ResponseMapper<T, R> mapper = findMapper(domainType);
         
-        // TODO：呼び出し元でblock()するかどうかを検討する.呼び出し元で制御したほうが拡張性が高いのでは。
         return webClient.get()
                 .uri(endpoint)
                 .retrieve()

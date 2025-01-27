@@ -25,7 +25,7 @@ public class IssInformationService implements InformationUseCase {
 
     @Override
     public List<?> execute() {
-        final Iss iss = apiClientPort.fetchData(ISS_API_URL, Iss.class);
+        final Iss iss = apiClientPort.fetchDataSync(ISS_API_URL, Iss.class);
         return List.of(iss);
     }
 }
