@@ -1,7 +1,7 @@
 package com.example.procdpchallenger.adapter.outbound.webclient;
 
 import java.util.List;
-
+import java.util.Map;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 
@@ -15,6 +15,7 @@ import lombok.AllArgsConstructor;
 public class WebClientAdapter implements ApiClientPort {
     private final WebClient webClient;
     private final List<ResponseMapper<?, ?>> mappers;
+    private final Map<Class<?>, String> endpointMap;
 
     @Override
     /*
@@ -22,9 +23,10 @@ public class WebClientAdapter implements ApiClientPort {
      * WebClientでblock()を行い<T>を返すことで、
      * アプリケーション層にアダプター層の詳細を隠蔽し層間の責任分担を明確にする。
      */
-    public <T, R> R fetchDataSync(String endpoint, Class<R> domainType) {
+    public <T, R> R fetchDataSync(Class<R> domainType) {
         ResponseMapper<T, R> mapper = findMapper(domainType);
-        
+        final String endpoint = endpointMap.get(domainType);
+
         return webClient.get()
                 .uri(endpoint)
                 .retrieve()
