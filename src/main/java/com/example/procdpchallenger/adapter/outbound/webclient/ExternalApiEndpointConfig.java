@@ -8,14 +8,18 @@ import org.springframework.context.annotation.Configuration;
 
 import com.example.procdpchallenger.domain.information.entity.Iss;
 
-/**
- * 外部APIのエンドポイントを管理するクラス。
- * 外部APIから取得するドメインエンティティをキーとして、エンドポイントを管理する。
- */
-
 @Configuration
 public class ExternalApiEndpointConfig {
-    @Bean
+
+    /**
+     * 外部APIのエンドポイントを管理するマッピング。
+     * ドメインエンティティをキーとして、エンドポイントを管理する。
+     * 今後別の Map<Class<?>, String> 型オブジェクトをDIコンテナに登録する可能性を考慮し、
+     * Beanに名前を付与し、コンストラクタがインジェクションするオブジェクトを明確にする。
+     * 
+     * @return 外部APIのエンドポイントを管理するマッピング
+     */
+    @Bean(name = "externalApiEndpointMap")
     public Map<Class<?>, String> externalApiEndpointMap() {
         Map<Class<?>, String> endpointMap = new HashMap<>();
 

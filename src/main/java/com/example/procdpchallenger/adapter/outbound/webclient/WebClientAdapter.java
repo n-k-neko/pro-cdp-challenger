@@ -2,20 +2,35 @@ package com.example.procdpchallenger.adapter.outbound.webclient;
 
 import java.util.List;
 import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import com.example.procdpchallenger.adapter.outbound.webclient.mapper.ResponseMapper;
 import com.example.procdpchallenger.application.port.outbound.ApiClientPort;
 
-import lombok.AllArgsConstructor;
-
 @Component
-@AllArgsConstructor
 public class WebClientAdapter implements ApiClientPort {
     private final WebClient webClient;
     private final List<ResponseMapper<?, ?>> mappers;
     private final Map<Class<?>, String> endpointMap;
+
+    /**
+     * WebClientAdapterのコンストラクタ。
+     * @Qualifier("externalApiEndpointMap")で、ExternalApiEndpointConfig.javaで定義したBeanを取得するため、
+     * 他クラスでは使用している@AllArgsConstructorを使えず、コンストラクタを使用する。
+     * 
+     * @param webClient WebClient   
+     * @param mappers レスポンスマッパーのリスト
+     * @param endpointMap エンドポイントマッピング
+     */
+    public WebClientAdapter(WebClient webClient, List<ResponseMapper<?, ?>> mappers,
+            @Qualifier("externalApiEndpointMap") Map<Class<?>, String> endpointMap) {
+        this.webClient = webClient;
+        this.mappers = mappers;
+        this.endpointMap = endpointMap;
+    }
 
     @Override
     /*
