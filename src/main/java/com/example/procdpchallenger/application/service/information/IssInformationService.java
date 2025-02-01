@@ -15,9 +15,6 @@ import lombok.AllArgsConstructor;
 public class IssInformationService implements InformationUseCase {
     private final ApiClientPort apiClientPort;
 
-    // ISSのAPIのURL
-    public static final String ISS_API_URL = "http://api.open-notify.org/iss-now.json";
-
     @Override
     public String getType() {
         return "iss";
@@ -25,7 +22,7 @@ public class IssInformationService implements InformationUseCase {
 
     @Override
     public List<?> execute() {
-        final Iss iss = apiClientPort.fetchData(ISS_API_URL, Iss.class);
+        final Iss iss = apiClientPort.fetchDataSync(Iss.class);
         return List.of(iss);
     }
 }

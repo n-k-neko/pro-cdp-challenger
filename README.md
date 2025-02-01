@@ -11,6 +11,7 @@
   - [試しの疎通](#試しの疎通)
     - [ユーザー登録](#ユーザー登録)
     - [JWT発行](#jwt発行)
+    - [ISS（国際宇宙ステーション）情報取得](#iss国際宇宙ステーション情報取得)
 
 ## ProCDP Challenger について
 資格試験学習のモチベーション維持をサポートするためのWebアプリケーションです。  
@@ -41,10 +42,10 @@
   - つまり、技術的な関心事での分離とはしない
 
 ### 開発方針
-**バックエンド：WebAPIアプリケーション**   
-[バックエンド開発方針](./documents/バックエンド開発方針.md)  
-**フロントエンド：ブラウザ**  
-Reactで開発したい。FlutterNativeも検討したい。
+#### 概要
+フロントエンドは**React**または**Flutter**などで実装したく、**WebAPI**のみを提供する。
+#### ドキュメント
+[開発ドキュメント目次](/documents/development/TOC.md)
 
 ## 試しの疎通
 開発環境での疎通手順。
@@ -62,7 +63,7 @@ curl -X POST http://localhost:8080/api/auth/login \
 ```
 ### ISS（国際宇宙ステーション）情報取得
 ```bash
-curl -X POST http://localhost:8080/api/information/iss \
+curl -X GET http://localhost:8080/api/information/iss \
      -H "Content-Type: application/json" \
      -H "Authorization: Bearer {JWT}"
 ```
