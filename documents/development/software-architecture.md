@@ -7,7 +7,7 @@
 クリーンアーキテクチャの原則を取り入れつつ、ヘキサゴナルアーキテクチャをベースに構築する。
 ### ヘキサゴナルアーキテクチャ
 前提：[旬なアーキテクチャって何だろう？（SOMPOシステムズ）](https://note.sompo-sys.com/n/n62fdd17a7dc4#03829441-0b62-48aa-b642-775854bb8a1b)   
-詳細：[Hexagonal Architecture(ヘキサゴナルアーキテクチャ) とは]([text](https:/zenn.dev/heyyou/articles/f380adb8d1fe8f))
+詳細：[Hexagonal Architecture(ヘキサゴナルアーキテクチャ) とは](https:/zenn.dev/heyyou/articles/f380adb8d1fe8f)
 ### 選定理由
 - **伝統的な3層構造を避けた理由**
   - サービス層がリポジトリ層に直接依存することで、リポジトリの変更がサービス層全体に影響を及ぼす可能性がある。
