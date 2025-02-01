@@ -15,13 +15,33 @@ spring:
 resilience4j:
   circuitbreaker:
     instances:
-      webClientCircuitBreaker:
-        registerHealthIndicator: true
-        slidingWindowSize: 10
-        minimumNumberOfCalls: 5
-        failureRateThreshold: 50
+      IssCircuitBreaker:
+        registerHealthIndicator: true # ヘルスチェックを有効にする
+        slidingWindowSize: 10 # スライディングウィンドウのサイズ。10回の呼び出しを記録する。
+        minimumNumberOfCalls: 5 # サーキットブレーカーが開くために必要な最小の呼び出し回数
+        failureRateThreshold: 50 # サーキットブレーカーが開くために必要な失敗率
         waitDurationInOpenState: 10s
-        permittedNumberOfCallsInHalfOpenState: 3
+        permittedNumberOfCallsInHalfOpenState: 3 # サーキットブレーカーが半開いている間に許可される呼び出し回数
         automaticTransitionFromOpenToHalfOpenEnabled: true
-        ignoreExceptions:
-          - org.springframework.web.reactive.function.client.WebClientResponseException$BadRequest
+        recordExceptions:
+          - org.springframework.web.reactive.function.client.WebClientResponseException$TooManyRequests
+          - org.springframework.web.reactive.function.client.WebClientResponseException$InternalServerError
+          - org.springframework.web.reactive.function.client.WebClientResponseException$BadGateway
+          - org.springframework.web.reactive.function.client.WebClientResponseException$ServiceUnavailable
+          - org.springframework.web.reactive.function.client.WebClientResponseException$GatewayTimeout
+        ignoreExceptions: []
+
+  retry:
+    instances:
+      IssRetry:
+        maxAttempts: 3
+        waitDuration: 1000ms
+        exponentialBackoffMultiplier: 2.0
+        retryExceptions:
+          - org.springframework.web.reactive.function.client.WebClientResponseException$TooManyRequests
+          - org.springframework.web.reactive.function.client.WebClientResponseException$InternalServerError
+          - org.springframework.web.reactive.function.client.WebClientResponseException$BadGateway
+          - org.springframework.web.reactive.function.client.WebClientResponseException$ServiceUnavailable
+          - org.springframework.web.reactive.function.client.WebClientResponseException$GatewayTimeout
+        ignoreExceptions: []
+

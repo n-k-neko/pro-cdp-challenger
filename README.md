@@ -63,7 +63,7 @@ curl -X POST http://localhost:8080/api/auth/login \
 ```
 ### ISS（国際宇宙ステーション）情報取得
 ```bash
-curl -X POST http://localhost:8080/api/information/iss \
+curl -X GET http://localhost:8080/api/information/iss \
      -H "Content-Type: application/json" \
      -H "Authorization: Bearer {JWT}"
 ```

@@ -6,14 +6,17 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 
 import com.example.procdpchallenger.adapter.exception.WebClientException;
 import com.example.procdpchallenger.adapter.outbound.webclient.mapper.ResponseMapper;
 import com.example.procdpchallenger.application.port.outbound.ApiClientPort;
 
+import io.github.resilience4j.circuitbreaker.CallNotPermittedException;
 import io.github.resilience4j.circuitbreaker.CircuitBreaker;
 import io.github.resilience4j.circuitbreaker.CircuitBreakerRegistry;
-import reactor.core.publisher.Mono;
+import io.github.resilience4j.retry.Retry;
+import io.github.resilience4j.retry.RetryRegistry;
 
 @Component
 public class WebClientAdapter implements ApiClientPort {
@@ -21,6 +24,7 @@ public class WebClientAdapter implements ApiClientPort {
     private final List<ResponseMapper<?, ?>> mappers;
     private final Map<Class<?>, String> endpointMap;
     private final CircuitBreakerRegistry circuitBreakerRegistry;
+    private final RetryRegistry retryRegistry;
 
     /**
      * WebClientAdapterのコンストラクタ。
@@ -33,11 +37,12 @@ public class WebClientAdapter implements ApiClientPort {
      * @param circuitBreakerRegistry サーキットブレーカーレジストリ
      */
     public WebClientAdapter(WebClient webClient, List<ResponseMapper<?, ?>> mappers,
-            @Qualifier("externalApiEndpointMap") Map<Class<?>, String> endpointMap, CircuitBreakerRegistry circuitBreakerRegistry) {
+            @Qualifier("externalApiEndpointMap") Map<Class<?>, String> endpointMap, CircuitBreakerRegistry circuitBreakerRegistry, RetryRegistry retryRegistry) {
         this.webClient = webClient;
         this.mappers = mappers;
         this.endpointMap = endpointMap;
         this.circuitBreakerRegistry = circuitBreakerRegistry;
+        this.retryRegistry = retryRegistry;
     }
 
     @Override
@@ -49,34 +54,36 @@ public class WebClientAdapter implements ApiClientPort {
     public <T, R> R fetchDataSync(Class<R> domainType) {
         ResponseMapper<T, R> mapper = findMapper(domainType);
         CircuitBreaker circuitBreaker = findCircuitBreaker(domainType);
+        Retry retry = findRetry(domainType);
         final String endpoint = endpointMap.get(domainType);
 
+        // リトライとサーキットブレーカーの設定はapplication.ymlで行う
         try {
-            return circuitBreaker.executeSupplier(() -> 
-                webClient.get()
-                    .uri(endpoint)
-                    .retrieve()
-                    /*
-                     * 400番台のエラーはアプリケーション側起因のエラーのため、
-                     * サーキットブレーカーによって再送するのではなく、例外を投げて処理を打ち切る
-                     */
-                    .onStatus(status -> status.is4xxClientError(), clientResponse ->
-                        // レスポンスボディをStringとして非同期に取得し、Mono<String>を返す
-                        clientResponse.bodyToMono(String.class)
-                            /*
-                             * 上記Monoの中で非同期処理を行い、その結果を新しいMonoに変換する。
-                             * 取得したボディを使って例外をスローするMono.errorを返す。
-                             */
-                            .flatMap(body -> Mono.error(new RuntimeException(
-                                "Client error: " + clientResponse.statusCode().value() + " " + body
-                            )))
-                    )
-                    .bodyToMono((Class<T>)mapper.getResponseType())
-                    .map(mapper::mapResponse)
-                    .block()
-            );
+            return Retry.decorateSupplier(retry, () -> 
+                circuitBreaker.executeSupplier(() -> 
+                    webClient.get()
+                        .uri(endpoint)
+                        .retrieve()
+                        .bodyToMono((Class<T>)mapper.getResponseType())
+                        .map(mapper::mapResponse)
+                        .block()
+                )
+            ).get();
+        } catch (WebClientResponseException e) {
+            // HTTPステータスコードがエラー（4xx, 5xx）である場合
+            // TODO: ロギング処理を実装する
+            System.out.println("Client error: " + e.getMessage());
+            return handleError(domainType, e);
+        } catch (CallNotPermittedException e) {
+            // サーキットブレーカーが開いているため、呼び出しが許可されなかった場合の処理
+            // TODO: ロギング処理を実装する
+            System.out.println("Circuit breaker is open, call not permitted: " + e.getMessage());
+            // TODO：フォールバック処理を実装する
+            return handleError(domainType, e);
         } catch (RuntimeException e) {
-            // サーキットブレーカーが開いている場合や他のエラーの場合のフォールバック処理
+            // その他の例外の場合
+            // TODO: ロギング処理を実装する
+            System.out.println("Other exception: " + e.getMessage());
             return handleError(domainType, e);
         }
     }
@@ -96,9 +103,14 @@ public class WebClientAdapter implements ApiClientPort {
 
     private <R> CircuitBreaker findCircuitBreaker(Class<R> domainType) {
         // domainTypeに基づいてサーキットブレーカを選択
-        // TODO: application.ymlでドメインエンティティごとにサーキットブレーカーを設定する
         String circuitBreakerName = domainType.getSimpleName() + "CircuitBreaker";
         return circuitBreakerRegistry.circuitBreaker(circuitBreakerName);
+    }
+
+    private <R> Retry findRetry(Class<R> domainType) {
+        // domainTypeに基づいてリトライを選択
+        String retryName = domainType.getSimpleName() + "Retry";
+        return retryRegistry.retry(retryName);
     }
 
     private <R> R handleError(Class<R> domainType, RuntimeException e) {

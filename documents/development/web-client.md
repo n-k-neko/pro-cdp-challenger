@@ -218,11 +218,17 @@ resilience4j:
         waitDuration: 500ms
         exponentialBackoffMultiplier: 2.0
         retryExceptions:
-          - org.springframework.web.reactive.function.client.WebClientResponseException
+          - org.springframework.web.reactive.function.client.WebClientResponseException$TooManyRequests
+          - org.springframework.web.reactive.function.client.WebClientResponseException$InternalServerError
+          - org.springframework.web.reactive.function.client.WebClientResponseException$BadGateway
+          - org.springframework.web.reactive.function.client.WebClientResponseException$ServiceUnavailable
+          - org.springframework.web.reactive.function.client.WebClientResponseException$GatewayTimeout
+        ignoreExceptions: []
 ```
 - **maxAttempts**：初回の試行を含めたトライの最大試行回数を指定
 - **waitDuration**：各リトライの間に待機する時間を指定
 - **retryExceptions**：リトライを行う対象の例外を指定
+- **ignoreExceptions**：リトライの対象としない例外を指定
 - **exponentialBackoffMultiplier**：各リトライごとに待機時間を倍増させるための倍率を指定
     - 2.0を設定した場合：1回目のリトライ 500ms, 2回目のリトライ 1000ms
 ---  
@@ -260,9 +266,13 @@ resilience4j:
         waitDurationInOpenState: 10s
         permittedNumberOfCallsInHalfOpenState: 3
         automaticTransitionFromOpenToHalfOpenEnabled: true
-        ignoreExceptions:
-          - org.springframework.web.reactive.function.client.WebClientResponseException$BadRequest
-          - org.springframework.web.reactive.function.client.WebClientResponseException$NotFound
+        recordExceptions:
+          - org.springframework.web.reactive.function.client.WebClientResponseException$TooManyRequests
+          - org.springframework.web.reactive.function.client.WebClientResponseException$InternalServerError
+          - org.springframework.web.reactive.function.client.WebClientResponseException$BadGateway
+          - org.springframework.web.reactive.function.client.WebClientResponseException$ServiceUnavailable
+          - org.springframework.web.reactive.function.client.WebClientResponseException$GatewayTimeout
+        ignoreExceptions: []
 ```
 - **registerHealthIndicator**：サーキットブレーカの状態をSpring Bootのアクチュエータのヘルスインジケータとして登録する。
 - **slidingWindowSize**：エラー率を計算するために使用するスライディングウィンドウのサイズを指定する。例では、直近の10回の呼び出しを基にエラー率を計算する。
@@ -271,5 +281,6 @@ resilience4j:
 - **waitDurationInOpenState**：ーキットブレーカがオープン状態のままでいる時間を指定する。
 - **permittedNumberOfCallsInHalfOpenState**：サーキットブレーカがハーフオープン状態で許可する呼び出しの数を指定する。
 - **automaticTransitionFromOpenToHalfOpenEnabled**：オープン状態からハーフオープン状態への自動遷移を有効にする。指定された時間が経過すると自動的にハーフオープン状態に移行する。
+- **recordExceptions**：サーキットブレーカの対象とする例外を指定する。
 - **ignoreExceptions**：サーキットブレーカのエラー率計算から除外する例外を指定する。
     - 特定の例外を無視することで、サーキットブレーカが不必要にオープン状態になるのを防ぐ。例えば、クライアントのリクエストエラー（400系）など、サーバー側の問題ではない例外を無視することが一般的。

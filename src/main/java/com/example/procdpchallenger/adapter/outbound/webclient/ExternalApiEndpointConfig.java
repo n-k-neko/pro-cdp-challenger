@@ -23,7 +23,7 @@ public class ExternalApiEndpointConfig {
     public Map<Class<?>, String> externalApiEndpointMap() {
         Map<Class<?>, String> endpointMap = new HashMap<>();
 
-        endpointMap.put(Iss.class, "/api/users");
+        endpointMap.put(Iss.class, "http://api.open-notify.org/iss-now.json");
 
         return endpointMap;
     }
