@@ -1,9 +1,9 @@
 # 開発ドキュメント目次
 
 - [ソフトウェアアーキテクチャ](software-architecture.md)
-- 設計ガイドライン
+- [設計ガイドライン](software-design-guidelines.md)
 - コーディングスタイル
-- テスト戦略
+- [テスト戦略](test-strategy.md)
 - デプロイメントガイド
 - [Webクライアントガイド](web-client.md)
 - [セキュリティガイド](security.md)

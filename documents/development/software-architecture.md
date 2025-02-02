@@ -10,7 +10,7 @@
 
 アーキテクチャ決定：**SOLID原則**および**DDD**、**ヘキサゴナルアーキテクチャ**のベストプラクティスを重視。これにより、システムの保守性と拡張性を向上。
 
-設計指針：詳細なガイドラインは（TODO）を参照。ガイドラインには、設計パターンやコーディングスタイルなどが含まれる。
+設計指針：[ソフトウェア設計ガイドライン](software-design-guideleines.md)を参照。アーキテクチャスタイル、アーキテクチャ特性、アーキテクチャ決定を設計で実現する方法を記載する。
 
 ---
 ## アーキテクチャスタイル
@@ -22,7 +22,7 @@
 - **伝統的な3層構造を避けた理由**
   - サービス層がリポジトリ層に直接依存することで、リポジトリの変更がサービス層全体に影響を及ぼす可能性がある。
   - **インタフェース**を用いて**依存性逆転の原則**を適用することで依存関係を逆転させることは可能だが、データアクセス層を最下層に置くという固定観念が原則適用の妨げになることがある。
-  - 3層構造ではサービス層が肥大化しやすい
+  - 3層構造ではサービス層が肥大化しやすい。以下が理想。
     - ドメイン層：業務ルールなど対象オブジェクトを実現する層。ドメインのコアを表現。
     - アプリケーション層：ドメインのサブ層。
       - ユースケースを実現
@@ -42,84 +42,6 @@
   - ドメインごとに様々な機能を同一パッケージに格納することで実現できるアクセス修飾子の効果とヘキサゴナルアーキテクチャのもたらす利点を天秤にかけて、許容できると判断。
 - 伝統的な3層構造と比較してパッケージ構造の複雑性が高い
   - パッケージごとに役割を細分化されているため、見た目ほど複雑性は高くない。またパッケージによって関心の分離が実現されているため、保守性および可読性は向上している。許容できると判断。
-
-
-### パッケージ構成
-構成例は以下。
-```plaintext
-src
-├── shared
-│   ├── exception
-│   │   ├── Base.java
-│   │   └── ErrorCodes.java
-├── adapter
-│   ├── inbound
-│   │   ├── controller
-│   │   ├── dto
-│   │   ├── security
-│   │   │   └── SecurityConfig.java
-│   │   ├── handler
-│   │       └── GlobalExceptionHandler.java
-│   └── outbound
-│       ├── repository
-│       │   └── UserRegistraitonRepositoryImpl.java
-│       ├── webclient
-│       │   └── WebClientAdapter.java
-├── application
-│   ├── port
-│   │   ├── inbound
-│   │   │   └── UserRegistraitonUseCase.java
-│   │   └── outbound
-│   │       ├── UserRegistraitonRepository.java
-│   │       └── WebClientPort.java
-│   ├── service
-│   ├── rule
-│   ├── policy
-│   └── exception
-├── domain
-│   ├── entity
-│   ├── valueobject
-│   ├── service
-│   ├── rule
-│   ├── policy
-│   └── exception
-└── infrastructure
-    ├── exception
-    ├── security
-    └── webclient
-```
-### パッケージ詳細
-#### shared層
-- **横断的な関心事**を格納する。
-  - 例：基底例外クラス
-
-#### adapter層
-- **inbound**: 外部からの入力を受け取り、受信ポートを呼び出す。
-  - **例**: HTTPリクエストを処理する`Controller`。
-  - **例**: Securityルールを定義する`SecurityConfig`。ただし、技術要素は**infrastructure層**に配置。
-- **outbound**: 送信ポートを実装し、能動的な外部通信を行う。
-  - **例**: データベース操作を行う`Repository`実装（例：`UserRegistrationRepositoryImpl`）。
-  - **例**: 外部サービスのWebAPIを発行する**Webクライアント**実装（例：`WebClientAdapter`）。
-
-#### application層
-- **port**: アプリケーションと外部を抽象化するインタフェースを提供。
-  - **inbound**: ユースケースを定義する受信ポート（例：`UserRegistraitonUseCase`）。
-  - **outbound**: 永続化や外部サービス連携を抽象化する送信ポート（例：`UserRegistrationRepository`）。
-- **service**: ユースケースを実装するサービスクラスを格納（例：`UserRegistrationService`）。
-- **rule**: 外部制約に基づく業務ルールを表現（例：ユーザーID重複不可）。
-- **policy**: 業務ルールの集合。
-
-#### domain層
-- **entity**: ドメインオブジェクトを格納（例：`UserForRegistration`）。
-- **valueobject**: 値オブジェクトを格納（例：`UserId`）。
-- **service**: ドメインロジックを提供（例：料金計算サービス）。
-- **rule**: ドメインに特化したルールを表現（例：商品割引ルール）。
-- **policy**: ドメインルールの集合。
-
-#### infrastructure層
-- **技術的な関心事を格納する。**
-  - **例**: トークン操作など、Securityの技術的部分
-  - **例**: WebClientのBean定義
 
 ---
 ## 開発言語
