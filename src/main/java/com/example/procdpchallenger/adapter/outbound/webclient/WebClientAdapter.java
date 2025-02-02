@@ -35,6 +35,7 @@ public class WebClientAdapter implements ApiClientPort {
      * @param mappers レスポンスマッパーのリスト
      * @param endpointMap エンドポイントマッピング
      * @param circuitBreakerRegistry サーキットブレーカーレジストリ
+     * @param retryRegistry リトライレジストリ
      */
     public WebClientAdapter(WebClient webClient, List<ResponseMapper<?, ?>> mappers,
             @Qualifier("externalApiEndpointMap") Map<Class<?>, String> endpointMap, CircuitBreakerRegistry circuitBreakerRegistry, RetryRegistry retryRegistry) {
@@ -48,7 +49,7 @@ public class WebClientAdapter implements ApiClientPort {
     @Override
     /*
      * 同期呼び出し
-     * WebClientでblock()を行い<T>を返すことで、
+     * WebClientでblock()を行い<R>を返すことで、
      * アプリケーション層にアダプター層の詳細を隠蔽し層間の責任分担を明確にする。
      */
     public <T, R> R fetchDataSync(Class<R> domainType) {

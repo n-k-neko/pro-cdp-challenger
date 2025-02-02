@@ -75,7 +75,7 @@
 **ドメインエンティティ**：`position`フィールドのみ
 ```java
 public class IssDomainObject {
-    private final String position;
+    private final String position; // 本番では値オブジェクトを用意する
 }
 ```
 **外部APIレスポンスDTO**：`position`に加えて、`message`フィールドも含まれる。`message`フィールドはドメインエンティティには不要。
@@ -132,7 +132,7 @@ Bean化してDIコンテナに登録する際には、他に同様のマップ�
 public Map<Class<?>, String> externalApiEndpointMap() {
     Map<Class<?>, String> endpointMap = new HashMap<>();
 
-    endpointMap.put(Iss.class, "/api/users");
+    endpointMap.put(Iss.class, "http://api.open-notify.org/iss-now.json");
 
     return endpointMap;
 }
@@ -202,7 +202,7 @@ Resilience4jは、以下のような機能を提供する。
 **WebClientAdapter.java**：リトライ処理を記述
 ```java
 // リトライインスタンスを取得
-Retry retry = retryRegistry.retry("IssRetry"); // 実際にはメソッドで設定する。
+Retry retry = retryRegistry.retry("IssRetry"); // 本番ではハードコーディングせずにメソッドで設定
 // リトライを適用する
 return Retry.decorateSupplier(retry, () ->
     // Webクライアント処理
@@ -247,7 +247,7 @@ WebAPIサービスが継続的にエラーを応答する場合、上記のリ�
 ### 実装例
 **WebClientAdapter.java**：サーキットブレーカ処理を記述
 ```java
-CircuitBreaker circuitBreaker = circuitBreakerRegistry.circuitBreaker(IssCircuitBreaker);
+CircuitBreaker circuitBreaker = circuitBreakerRegistry.circuitBreaker(IssCircuitBreaker); // 本番ではハードコーディングせずにメソッドで設定
 circuitBreaker.executeSupplier(() -> 
     webClient.get()
     .block()
