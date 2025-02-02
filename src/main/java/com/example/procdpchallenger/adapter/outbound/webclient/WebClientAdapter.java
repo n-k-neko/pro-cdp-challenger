@@ -17,6 +17,7 @@ import io.github.resilience4j.circuitbreaker.CircuitBreaker;
 import io.github.resilience4j.circuitbreaker.CircuitBreakerRegistry;
 import io.github.resilience4j.retry.Retry;
 import io.github.resilience4j.retry.RetryRegistry;
+import com.example.procdpchallenger.shared.exception.ErrorCodes;
 
 @Component
 public class WebClientAdapter implements ApiClientPort {
@@ -72,20 +73,19 @@ public class WebClientAdapter implements ApiClientPort {
             ).get();
         } catch (WebClientResponseException e) {
             // HTTPステータスコードがエラー（4xx, 5xx）である場合
-            // TODO: ロギング処理を実装する
-            System.out.println("Client error: " + e.getMessage());
-            return handleError(domainType, e);
+            if (e.getStatusCode().is4xxClientError()) {
+                return handleError(domainType, e, ErrorCodes.WEB_CLIENT_ERROR_400_TO_499);
+            } else if (e.getStatusCode().is5xxServerError()) {
+                return handleError(domainType, e, ErrorCodes.WEB_CLIENT_ERROR_500_TO_599);
+            } else {
+                return handleError(domainType, e, ErrorCodes.WEB_CLIENT_ERROR_OTHER);
+            }
         } catch (CallNotPermittedException e) {
             // サーキットブレーカーが開いているため、呼び出しが許可されなかった場合の処理
-            // TODO: ロギング処理を実装する
-            System.out.println("Circuit breaker is open, call not permitted: " + e.getMessage());
-            // TODO：フォールバック処理を実装する
-            return handleError(domainType, e);
+            return handleError(domainType, e, ErrorCodes.WEB_CLIENT_ERROR_CIRCUIT_BREAKER_OPEN);
         } catch (RuntimeException e) {
             // その他の例外の場合
-            // TODO: ロギング処理を実装する
-            System.out.println("Other exception: " + e.getMessage());
-            return handleError(domainType, e);
+            return handleError(domainType, e, ErrorCodes.WEB_CLIENT_ERROR_OTHER);
         }
     }
 
@@ -114,9 +114,8 @@ public class WebClientAdapter implements ApiClientPort {
         return retryRegistry.retry(retryName);
     }
 
-    private <R> R handleError(Class<R> domainType, RuntimeException e) {
-        // WebClientExceptionを投げる
-        // TODO: フォールバック処理を実装する
-        throw new WebClientException("TEST", "Error occurred while fetching data for " + domainType.getSimpleName());
+    private <R> R handleError(Class<R> domainType, RuntimeException e, String errorCode) {
+        // TODO：ロギング処理を実装する
+        throw new WebClientException(errorCode, e.getMessage() + " for " + domainType.getSimpleName());
     }
 }

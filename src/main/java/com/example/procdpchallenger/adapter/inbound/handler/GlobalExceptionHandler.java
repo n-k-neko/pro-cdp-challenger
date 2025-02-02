@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
+import com.example.procdpchallenger.adapter.exception.WebClientException;
 import com.example.procdpchallenger.adapter.inbound.dto.ErrorResponse;
 import com.example.procdpchallenger.application.exception.BusinessRuleViolationException;
 import com.example.procdpchallenger.domain.exception.DomainRuleViolationException;
@@ -46,5 +47,11 @@ public class GlobalExceptionHandler {
             "Invalid credentials provided"  // クライアントに返すメッセージ
         );
         return new ResponseEntity<>(errorResponse, HttpStatus.UNAUTHORIZED);
+    }
+
+    @ExceptionHandler(WebClientException.class)
+    public ResponseEntity<ErrorResponse> handleWebClientException(WebClientException e) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                             .body(new ErrorResponse(e.getErrorCode(), "An unexpected error occurred."));
     }
 }
