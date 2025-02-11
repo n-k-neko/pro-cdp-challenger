@@ -27,7 +27,7 @@ public abstract class BaseException extends RuntimeException {
     private final String errorCode;
     private final ErrorCategory errorCategory;
 
-    protected BaseException(String message, String errorCode, ErrorCategory errorCategory) {
+    protected BaseException(ErrorCategory errorCategory, String errorCode, String errorMessage) {
         super(message);
         this.errorCode = errorCode;
         this.errorCategory = errorCategory;

@@ -5,13 +5,19 @@ package com.example.procdpchallenger.shared.exception;
  */
 public abstract class BaseException extends RuntimeException {
     private final String errorCode;
+    private final ErrorCategory errorCategory;
 
-    protected BaseException(String errorCode, String errorMessage) {
+    protected BaseException(ErrorCategory errorCategory, String errorCode, String errorMessage) {
         super(errorMessage);
         this.errorCode = errorCode;
+        this.errorCategory = errorCategory;
     }
 
     public String getErrorCode() {
         return errorCode;
+    }
+
+    public ErrorCategory getErrorCategory() {
+        return errorCategory;
     }
 }
