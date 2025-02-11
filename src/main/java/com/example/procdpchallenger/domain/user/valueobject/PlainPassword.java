@@ -2,6 +2,7 @@ package com.example.procdpchallenger.domain.user.valueobject;
 
 import com.example.procdpchallenger.domain.exception.DomainRuleViolationException;
 import com.example.procdpchallenger.shared.exception.ErrorCodes;
+import com.example.procdpchallenger.shared.exception.ErrorCategory;
 
 public record PlainPassword(String value) {
     public static final int MIN_LENGTH = 8;
@@ -10,16 +11,17 @@ public record PlainPassword(String value) {
 
     public PlainPassword {
         if (value == null || value.isEmpty()) {
-            throw new DomainRuleViolationException(ErrorCodes.INVALID_PASSWORD, "Password must not be null or empty");
+            throw new DomainRuleViolationException(ErrorCategory.ERROR, ErrorCodes.INVALID_PASSWORD, "Password must not be null or empty");
         }
         if (value.length() < MIN_LENGTH) {
-            throw new DomainRuleViolationException(ErrorCodes.INVALID_PASSWORD, "Password must be at least " + MIN_LENGTH + " characters");
+            throw new DomainRuleViolationException(ErrorCategory.ERROR, ErrorCodes.INVALID_PASSWORD, "Password must be at least " + MIN_LENGTH + " characters");
         }
         if (value.length() > MAX_LENGTH) {
-            throw new DomainRuleViolationException(ErrorCodes.INVALID_PASSWORD, "PlainPassword must not exceed " + MAX_LENGTH + " characters");
+            throw new DomainRuleViolationException(ErrorCategory.ERROR, ErrorCodes.INVALID_PASSWORD, "PlainPassword must not exceed " + MAX_LENGTH + " characters");
         }
         if (!isValidPassword(value)) {
             throw new DomainRuleViolationException(
+                ErrorCategory.ERROR, 
                 ErrorCodes.INVALID_PASSWORD, 
                 PASSWORD_REQUIREMENTS
             );

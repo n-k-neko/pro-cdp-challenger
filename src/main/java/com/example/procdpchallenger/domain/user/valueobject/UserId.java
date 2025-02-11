@@ -4,6 +4,8 @@ import java.util.List;
 
 import com.example.procdpchallenger.domain.exception.DomainRuleViolationException;
 import com.example.procdpchallenger.shared.exception.ErrorCodes;
+import com.example.procdpchallenger.shared.exception.ErrorCategory;
+
 public record UserId(String value) {
     public static final int MIN_LENGTH = 4;
     public static final int MAX_LENGTH = 15;
@@ -13,16 +15,16 @@ public record UserId(String value) {
 
     public UserId {
         if (value == null || value.isEmpty()) {
-            throw new DomainRuleViolationException(ErrorCodes.INVALID_USER_ID, "UserId must not be null or empty");
+            throw new DomainRuleViolationException(ErrorCategory.ERROR, ErrorCodes.INVALID_USER_ID, "UserId must not be null or empty");
         }
         if (value.length() < MIN_LENGTH) {
-            throw new DomainRuleViolationException(ErrorCodes.INVALID_USER_ID, "UserId must be at least " + MIN_LENGTH + " characters");
+            throw new DomainRuleViolationException(ErrorCategory.ERROR, ErrorCodes.INVALID_USER_ID, "UserId must be at least " + MIN_LENGTH + " characters");
         }
         if (value.length() > MAX_LENGTH) {
-            throw new DomainRuleViolationException(ErrorCodes.INVALID_USER_ID, "UserId must not exceed " + MAX_LENGTH + " characters");
+            throw new DomainRuleViolationException(ErrorCategory.ERROR, ErrorCodes.INVALID_USER_ID, "UserId must not exceed " + MAX_LENGTH + " characters");
         }
         if (isProhibitedWord(value)) {
-            throw new DomainRuleViolationException(ErrorCodes.INVALID_USER_ID, "UserId must not be one of the prohibited words: " + PROHIBITED_WORDS);
+            throw new DomainRuleViolationException(ErrorCategory.INFO, ErrorCodes.INVALID_USER_ID, "UserId must not be one of the prohibited words: " + PROHIBITED_WORDS);
         }
     }
 

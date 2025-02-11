@@ -10,6 +10,7 @@ import com.example.procdpchallenger.domain.user.policy.DomainUserRegistrationPol
 import com.example.procdpchallenger.domain.user.valueobject.EmailAddress;
 import com.example.procdpchallenger.domain.user.valueobject.PlainPassword;
 import com.example.procdpchallenger.domain.user.valueobject.UserId;
+import com.example.procdpchallenger.shared.exception.ErrorCategory;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -75,7 +76,7 @@ class UserRegistrationServiceTest {
             new PlainPassword("password123"),
             new EmailAddress("test@example.com")
         );
-        doThrow(new DomainRuleViolationException("UNIT_TEST", "ドメインポリシー違反"))
+        doThrow(new DomainRuleViolationException(ErrorCategory.ERROR, "UNIT_TEST", "ドメインポリシー違反"))
             .when(domainUserRegistrationPolicy).validate(any(UserForRegistration.class));
 
         // When/Then
@@ -94,7 +95,7 @@ class UserRegistrationServiceTest {
             new PlainPassword("password123"),
             new EmailAddress("test@example.com")
         );
-        doThrow(new BusinessRuleViolationException("UNIT_TEST", "アプリケーションポリシー違反"))
+        doThrow(new BusinessRuleViolationException(ErrorCategory.ERROR, "UNIT_TEST", "アプリケーションポリシー違反"))
             .when(applicationUserRegistrationPolicy).validate(any(UserForRegistration.class));
 
         // When/Then

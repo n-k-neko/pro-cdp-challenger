@@ -3,6 +3,7 @@ package com.example.procdpchallenger.application.rule.user;
 import com.example.procdpchallenger.application.exception.BusinessRuleViolationException;
 import com.example.procdpchallenger.application.port.outbound.user.UserRepository;
 import com.example.procdpchallenger.domain.user.entity.UserForRegistration;
+import com.example.procdpchallenger.shared.exception.ErrorCategory;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 import com.example.procdpchallenger.shared.exception.ErrorCodes;
@@ -16,6 +17,7 @@ public class EmailAdressDuplicationRule implements ApplicationUserRegistrationRu
     public void validate(UserForRegistration userForRegistration) {
         if (userRepository.existsByEmailAddress(userForRegistration.emailAddress())) {
             throw new BusinessRuleViolationException(
+                ErrorCategory.INFO,
                 ErrorCodes.EMAIL_ALREADY_EXISTS_IN_DB,
                 "EmailAddress is already taken");
         }

@@ -11,7 +11,7 @@ import org.springframework.web.reactive.function.client.WebClientResponseExcepti
 import com.example.procdpchallenger.adapter.exception.WebClientException;
 import com.example.procdpchallenger.adapter.outbound.webclient.mapper.ResponseMapper;
 import com.example.procdpchallenger.application.port.outbound.ApiClientPort;
-
+import com.example.procdpchallenger.shared.exception.ErrorCategory;
 import io.github.resilience4j.circuitbreaker.CallNotPermittedException;
 import io.github.resilience4j.circuitbreaker.CircuitBreaker;
 import io.github.resilience4j.circuitbreaker.CircuitBreakerRegistry;
@@ -117,6 +117,6 @@ public class WebClientAdapter implements ApiClientPort {
     private <R> R handleError(Class<R> domainType, RuntimeException e) {
         // WebClientExceptionを投げる
         // TODO: フォールバック処理を実装する
-        throw new WebClientException("TEST", "Error occurred while fetching data for " + domainType.getSimpleName());
+        throw new WebClientException(ErrorCategory.ERROR, "TEST", "Error occurred while fetching data for " + domainType.getSimpleName());
     }
 }
