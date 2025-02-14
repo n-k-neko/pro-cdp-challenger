@@ -1,5 +1,8 @@
 package com.example.procdpchallenger.domain.exam.valueobject;
 
+import com.example.procdpchallenger.domain.exception.DomainRuleViolationException;
+import com.example.procdpchallenger.shared.exception.ErrorCategory;
+
 import lombok.Getter;
 
 import java.util.Objects;
@@ -19,7 +22,7 @@ public class ExamDescription {
     public ExamDescription(String value) {
         this.value = Objects.requireNonNullElse(value, "");
         if (this.value.length() > MAX_LENGTH) {
-            throw new IllegalArgumentException("ExamDescription must not exceed " + MAX_LENGTH + " characters");
+            throw new DomainRuleViolationException(ErrorCategory.ERROR, "EXAM_DESCRIPTION_TOO_LONG", "ExamDescription must not exceed " + MAX_LENGTH + " characters. value: " + value);
         }
     }
 }

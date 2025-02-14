@@ -18,10 +18,10 @@ public record UserId(String value) {
             throw new DomainRuleViolationException(ErrorCategory.ERROR, ErrorCodes.INVALID_USER_ID, "UserId must not be null or empty");
         }
         if (value.length() < MIN_LENGTH) {
-            throw new DomainRuleViolationException(ErrorCategory.ERROR, ErrorCodes.INVALID_USER_ID, "UserId must be at least " + MIN_LENGTH + " characters");
+            throw new DomainRuleViolationException(ErrorCategory.ERROR, ErrorCodes.INVALID_USER_ID, "UserId must be at least " + MIN_LENGTH + " characters. length: " + value.length());
         }
         if (value.length() > MAX_LENGTH) {
-            throw new DomainRuleViolationException(ErrorCategory.ERROR, ErrorCodes.INVALID_USER_ID, "UserId must not exceed " + MAX_LENGTH + " characters");
+            throw new DomainRuleViolationException(ErrorCategory.ERROR, ErrorCodes.INVALID_USER_ID, "UserId must not exceed " + MAX_LENGTH + " characters. length: " + value.length());
         }
         if (isProhibitedWord(value)) {
             throw new DomainRuleViolationException(ErrorCategory.INFO, ErrorCodes.INVALID_USER_ID, "UserId must not be one of the prohibited words: " + PROHIBITED_WORDS);

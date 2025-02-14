@@ -14,10 +14,10 @@ public record PlainPassword(String value) {
             throw new DomainRuleViolationException(ErrorCategory.ERROR, ErrorCodes.INVALID_PASSWORD, "Password must not be null or empty");
         }
         if (value.length() < MIN_LENGTH) {
-            throw new DomainRuleViolationException(ErrorCategory.ERROR, ErrorCodes.INVALID_PASSWORD, "Password must be at least " + MIN_LENGTH + " characters");
+            throw new DomainRuleViolationException(ErrorCategory.ERROR, ErrorCodes.INVALID_PASSWORD, "Password must be at least " + MIN_LENGTH + " characters. length: " + value.length());
         }
         if (value.length() > MAX_LENGTH) {
-            throw new DomainRuleViolationException(ErrorCategory.ERROR, ErrorCodes.INVALID_PASSWORD, "PlainPassword must not exceed " + MAX_LENGTH + " characters");
+            throw new DomainRuleViolationException(ErrorCategory.ERROR, ErrorCodes.INVALID_PASSWORD, "PlainPassword must not exceed " + MAX_LENGTH + " characters. length: " + value.length());
         }
         if (!isValidPassword(value)) {
             throw new DomainRuleViolationException(
